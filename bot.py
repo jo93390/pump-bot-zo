@@ -54,7 +54,7 @@ while True:
             key = t["symbol"]
             if key not in seen:
                 seen.add(key)
-                if float(t["liquidity"]) < 50000:
+                if float(t["liquidity"]) < 7000:
                     continue
                 msg = f"🚨 {t['name']} ({t['symbol']})\n💰 ${t['price']}\n💧 ${t['liquidity']}\n🔗 {t['url']}"
                 send(msg)
