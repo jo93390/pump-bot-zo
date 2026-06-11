@@ -1,6 +1,7 @@
 import requests
 import time
 import os
+from threading import Thread
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
@@ -9,8 +10,17 @@ def send(text):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     try:
         requests.post(url, json={"chat_id": CHAT_ID, "text": text}, timeout=10)
-    except Exception as e:
-        print(e)
+    except:
+        pass
+
+def fake_web_server():
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"Bot is running")
+    HTTPServer(("0.0.0.0", 8080), Handler).serve_forever()
 
 def get_new_tokens():
     url = "https://api.dexscreener.com/latest/dex/search?q=solana"
@@ -33,8 +43,10 @@ def get_new_tokens():
     return []
 
 send("🔥 Bot Pump Fun actif, Alpha.")
-seen = set()
 
+Thread(target=fake_web_server).start()
+
+seen = set()
 while True:
     try:
         tokens = get_new_tokens()
